@@ -3,10 +3,12 @@ import matplotlib.pyplot as plt
 
 class Bandit:
     def __init__(self, arms = 10):
+        self.arms = arms
         self.rates = np.random.rand(arms)
 
     def play(self, arm):
         rate = self.rates[arm]
+        self.rates += 0.1 * np.random.randn(self.arms)
         if rate > np.random.rand():
             return 1
         else:    
@@ -33,14 +35,14 @@ class Bandit:
 #     print(Qs)
 
 class Agent:
-    def __init__(self, epsilon, action_size=10):
+    def __init__(self, epsilon, alpha, action_size=10):
         self.epsilon = epsilon
         self.Qs = np.zeros(action_size)
-        self.ns = np.zeros(action_size)
-    
+        self.alpha = alpha 
+
     def update(self, action, reward):
-        self.ns[action] += 1
-        self.Qs[action] += (reward - self.Qs[action])/self.ns[action]
+        # self.ns[action] += 1
+        self.Qs[action] += (reward - self.Qs[action])*self.alpha
 
     def get_action(self):
         if np.random.rand() < self.epsilon:
